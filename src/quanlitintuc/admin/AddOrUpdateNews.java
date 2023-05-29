@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import quanlitintuc.utils.DatabaseUtils;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,18 +21,72 @@ import quanlitintuc.utils.IMAGE_RESOURCE;
  *
  * @author Anh Bui
  */
-public class AddNews extends javax.swing.JFrame {
+public class AddOrUpdateNews extends javax.swing.JFrame {
 
     private File selectedImageFile; // Biến để lưu trữ tệp tin ảnh đã chọn
+    private int newsId;
 
     /**
      * Creates new form AddNews
      */
-    public AddNews() {
+    public AddOrUpdateNews() {
         initComponents();
         // Gọi phương thức để load danh mục vào combo box khi khởi tạo giao diện
         loadDanhMucComboBox();
+         setLocationRelativeTo(null);
     }
+
+    public AddOrUpdateNews(int newsId) {
+        initComponents();
+        this.newsId = newsId;
+        loadDanhMucComboBox();
+        displayNewsInfo();
+         setLocationRelativeTo(null);
+    }
+
+    private void displayNewsInfo() {
+    try {
+        Connection connection = DatabaseUtils.getConnection();
+
+        // Query to get news information by newsId
+        String getNewsInfoQuery = "SELECT * FROM news WHERE id = ?";
+        PreparedStatement getNewsInfoStmt = connection.prepareStatement(getNewsInfoQuery);
+        getNewsInfoStmt.setInt(1, newsId);
+        ResultSet resultSet = getNewsInfoStmt.executeQuery();
+
+        if (resultSet.next()) {
+            String title = resultSet.getString("title");
+            String image = resultSet.getString("image");
+            String content = resultSet.getString("content");
+            int categoryId = resultSet.getInt("category_id");
+
+            tieuDeTxt.setText(title);
+            noiDungTxt.setText(content);
+            danhMucCboBox.setSelectedItem(getCategoryName(categoryId));
+
+            String imagePath = IMAGE_RESOURCE.SOURCE_PATH + image;
+            File imageFile = new File(imagePath);
+            if (imageFile.exists()) {
+                // Gán giá trị cũ cho selectedImageFile
+                selectedImageFile = imageFile;
+
+                ImageIcon imageIcon = new ImageIcon(imagePath);
+                int labelWidth = anhTinTucLabel.getWidth();
+                int labelHeight = anhTinTucLabel.getHeight();
+                Image scaledImage = imageIcon.getImage().getScaledInstance(labelWidth, labelHeight, Image.SCALE_SMOOTH);
+                ImageIcon resizedImageIcon = new ImageIcon(scaledImage);
+                anhTinTucLabel.setIcon(resizedImageIcon);
+            }
+        }
+
+        getNewsInfoStmt.close();
+        connection.close();
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -54,7 +107,7 @@ public class AddNews extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         noiDungTxt = new javax.swing.JTextArea();
-        dangBaiVietBtn = new javax.swing.JButton();
+        taoCapNhatBtn = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         danhMucCboBox = new javax.swing.JComboBox<>();
         backBtn = new javax.swing.JButton();
@@ -92,12 +145,12 @@ public class AddNews extends javax.swing.JFrame {
         noiDungTxt.setRows(5);
         jScrollPane1.setViewportView(noiDungTxt);
 
-        dangBaiVietBtn.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        dangBaiVietBtn.setForeground(new java.awt.Color(51, 153, 0));
-        dangBaiVietBtn.setText("Đăng bài");
-        dangBaiVietBtn.addActionListener(new java.awt.event.ActionListener() {
+        taoCapNhatBtn.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        taoCapNhatBtn.setForeground(new java.awt.Color(51, 153, 0));
+        taoCapNhatBtn.setText("Tạo/Cập nhật");
+        taoCapNhatBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dangBaiVietBtnActionPerformed(evt);
+                taoCapNhatBtnActionPerformed(evt);
             }
         });
 
@@ -148,19 +201,22 @@ public class AddNews extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(302, 302, 302))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(28, 28, 28)
+                .addGap(29, 29, 29)
                 .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(dangBaiVietBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(taoCapNhatBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(339, 339, 339))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(38, 38, 38)
-                .addComponent(jLabel1)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(38, 38, 38)
+                        .addComponent(jLabel1)
                         .addGap(26, 26, 26)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -185,12 +241,8 @@ public class AddNews extends javax.swing.JFrame {
                             .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-                        .addComponent(dangBaiVietBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(29, 29, 29))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(14, 14, 14))))
+                        .addComponent(taoCapNhatBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(29, 29, 29))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -234,79 +286,10 @@ public class AddNews extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_uploadAnhBtnActionPerformed
 
-    private void dangBaiVietBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dangBaiVietBtnActionPerformed
-        String tieuDe = tieuDeTxt.getText();
-        String noiDung = noiDungTxt.getText();
-        String danhMuc = danhMucCboBox.getSelectedItem().toString();
+    private void taoCapNhatBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taoCapNhatBtnActionPerformed
 
-        // Kiểm tra xem đã chọn ảnh hay chưa
-        if (selectedImageFile == null) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn ảnh");
-            return;
-        }
-
-        try {
-            Connection connection = DatabaseUtils.getConnection();
-
-            // Lấy id của danh mục từ tên danh mục
-            String getCategoryIdQuery = "SELECT id FROM categories WHERE name = ?";
-            PreparedStatement getCategoryIdStmt = connection.prepareStatement(getCategoryIdQuery);
-            getCategoryIdStmt.setString(1, danhMuc);
-            ResultSet resultSet = getCategoryIdStmt.executeQuery();
-            if (!resultSet.next()) {
-                JOptionPane.showMessageDialog(this, "Danh mục không tồn tại");
-                return;
-            }
-            int categoryId = resultSet.getInt("id");
-            int authorId = getAuthorId(CurrentUser.username);
-
-            // Tạo tên cơ sở (basename) cho ảnh
-            String imageBasename = selectedImageFile.getName();
-
-            // Tạo đường dẫn mới cho ảnh trong thư mục lưu trữ
-            String newImagePath = IMAGE_RESOURCE.SOURCE_PATH + imageBasename;
-
-            // Di chuyển file ảnh gốc vào thư mục lưu trữ
-            File newImageFile = new File(newImagePath);
-            Files.copy(selectedImageFile.toPath(), newImageFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-
-            // Thực hiện câu lệnh insert bài viết mới vào cơ sở dữ liệu
-            String insertNewsQuery = "INSERT INTO news (title, image, content, created_date, author_id, category_id) VALUES (?, ?, ?, current_timestamp(), ?, ?)";
-            PreparedStatement insertNewsStmt = connection.prepareStatement(insertNewsQuery, PreparedStatement.RETURN_GENERATED_KEYS);
-
-            insertNewsStmt.setString(1, tieuDe);
-            insertNewsStmt.setString(2, imageBasename);
-            insertNewsStmt.setString(3, noiDung);
-            insertNewsStmt.setInt(4, authorId);
-            insertNewsStmt.setInt(5, categoryId);
-            insertNewsStmt.executeUpdate();
-
-            // Lấy id của bài viết mới được tạo
-            ResultSet generatedKeys = insertNewsStmt.getGeneratedKeys();
-            int newNewsId;
-            if (generatedKeys.next()) {
-                newNewsId = generatedKeys.getInt(1);
-
-                // Hiển thị thông báo thành công
-                JOptionPane.showMessageDialog(this, "Đăng bài viết thành công!");
-
-                // Reset các trường dữ liệu
-                tieuDeTxt.setText("");
-                noiDungTxt.setText("");
-                anhTinTucLabel.setIcon(null);
-            } else {
-                JOptionPane.showMessageDialog(this, "Đăng bài viết không thành công");
-            }
-
-            // Đóng kết nối và tài nguyên
-            insertNewsStmt.close();
-            getCategoryIdStmt.close();
-            connection.close();
-
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-        }
-    }//GEN-LAST:event_dangBaiVietBtnActionPerformed
+        saveNews();
+    }//GEN-LAST:event_taoCapNhatBtnActionPerformed
 
     private void danhMucCboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_danhMucCboBoxActionPerformed
         // TODO add your handling code here:
@@ -322,27 +305,7 @@ public class AddNews extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddNews.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddNews.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddNews.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddNews.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
+
         //</editor-fold>
 
         /* Create and display the form */
@@ -350,7 +313,7 @@ public class AddNews extends javax.swing.JFrame {
 
             @Override
             public void run() {
-                new AddNews().setVisible(true);
+                new AddOrUpdateNews().setVisible(true);
             }
         });
     }
@@ -358,7 +321,6 @@ public class AddNews extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel anhTinTucLabel;
     private javax.swing.JButton backBtn;
-    private javax.swing.JButton dangBaiVietBtn;
     private javax.swing.JComboBox<String> danhMucCboBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -368,6 +330,7 @@ public class AddNews extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea noiDungTxt;
+    private javax.swing.JButton taoCapNhatBtn;
     private javax.swing.JTextField tieuDeTxt;
     private javax.swing.JButton uploadAnhBtn;
     // End of variables declaration//GEN-END:variables
@@ -422,4 +385,93 @@ public class AddNews extends javax.swing.JFrame {
         return -1; // Trả về -1 nếu không tìm thấy author_id
     }
 
+    private void saveNews() {
+        String title = tieuDeTxt.getText();
+        String content = noiDungTxt.getText();
+        String category = danhMucCboBox.getSelectedItem().toString();
+
+        if (content.isEmpty() || category.isEmpty() || selectedImageFile == null) {
+//            System.out.println(content);
+//            System.out.println(category);
+//            System.out.println(selectedImageFile);
+
+            JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            Connection connection = DatabaseUtils.getConnection();
+
+            String getCategoryIdQuery = "SELECT id FROM categories WHERE name = ?";
+            PreparedStatement getCategoryIdStmt = connection.prepareStatement(getCategoryIdQuery);
+            getCategoryIdStmt.setString(1, category);
+            ResultSet resultSet = getCategoryIdStmt.executeQuery();
+
+            if (resultSet.next()) {
+                int categoryId = resultSet.getInt("id");
+
+                if (newsId == 0) {
+                    // Insert bài viết mới
+                    String insertNewsQuery = "INSERT INTO news (title, image, content, category_id, author_id) VALUES (?, ?, ?, ?, ?)";
+                    PreparedStatement insertNewsStmt = connection.prepareStatement(insertNewsQuery);
+                    insertNewsStmt.setString(1, title);
+                    insertNewsStmt.setString(2, selectedImageFile.getName());
+                    insertNewsStmt.setString(3, content);
+                    insertNewsStmt.setInt(4, categoryId);
+                    insertNewsStmt.setInt(5, getAuthorId(CurrentUser.username));
+                    insertNewsStmt.executeUpdate();
+                    insertNewsStmt.close();
+                } else {
+                    // Update bài viết
+                    String updateNewsQuery = "UPDATE news SET title = ?, image = ?, content = ?, category_id = ? WHERE id = ?";
+                    PreparedStatement updateNewsStmt = connection.prepareStatement(updateNewsQuery);
+                    updateNewsStmt.setString(1, title);
+                    updateNewsStmt.setString(2, selectedImageFile.getName());
+                    updateNewsStmt.setString(3, content);
+                    updateNewsStmt.setInt(4, categoryId);
+                    updateNewsStmt.setInt(5, newsId);
+                    updateNewsStmt.executeUpdate();
+                    updateNewsStmt.close();
+                }
+
+                File destination = new File(IMAGE_RESOURCE.SOURCE_PATH + selectedImageFile.getName());
+                Files.copy(selectedImageFile.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                JOptionPane.showMessageDialog(this, "Tạo/cập nhật bài viết thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                NewsManagement management = new NewsManagement();
+                management.setVisible(true);
+                this.dispose(); // Đóng cửa sổ 
+
+            } else {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy danh mục", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+
+            getCategoryIdStmt.close();
+            connection.close();
+
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi lưu bài viết", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static String getCategoryName(int categoryId) {
+        String categoryName = null;
+
+        try (Connection connection = DatabaseUtils.getConnection()) {
+            String query = "SELECT name FROM categories WHERE id = ?";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setInt(1, categoryId);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        categoryName = resultSet.getString("name");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return categoryName;
+    }
 }

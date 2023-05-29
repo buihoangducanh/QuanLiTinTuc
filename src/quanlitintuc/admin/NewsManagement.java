@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.table.DefaultTableModel;
 import java.sql.PreparedStatement;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -20,6 +21,7 @@ public class NewsManagement extends javax.swing.JFrame {
     public NewsManagement() {
         initComponents();
         loadDataToTable();
+        setLocationRelativeTo(null);
     }
 
     @SuppressWarnings("unchecked")
@@ -36,8 +38,8 @@ public class NewsManagement extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tinTucTbl = new javax.swing.JTable();
         themBtn = new javax.swing.JButton();
-        xemBtn = new javax.swing.JButton();
         xoaBtn = new javax.swing.JButton();
+        capNhatBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Quản lí tin tức");
@@ -91,51 +93,54 @@ public class NewsManagement extends javax.swing.JFrame {
             }
         });
 
-        xemBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        xemBtn.setForeground(new java.awt.Color(204, 204, 0));
-        xemBtn.setText("Xem chi tiết");
-        xemBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                xemBtnActionPerformed(evt);
-            }
-        });
-
         xoaBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         xoaBtn.setForeground(new java.awt.Color(204, 51, 0));
         xoaBtn.setText("Xoá");
+        xoaBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xoaBtnActionPerformed(evt);
+            }
+        });
+
+        capNhatBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        capNhatBtn.setForeground(new java.awt.Color(0, 204, 102));
+        capNhatBtn.setText("Cập nhật");
+        capNhatBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                capNhatBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(31, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(244, 244, 244)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1012, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jScrollPane1)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(locCboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(163, 163, 163)
-                                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGap(51, 51, 51))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(themBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(themBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(xemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(200, 200, 200)
-                            .addComponent(xoaBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(114, 114, 114)))))
+                            .addComponent(capNhatBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(157, 157, 157)
+                            .addComponent(xoaBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(locCboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(117, 117, 117)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(64, 64, 64)
+                        .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -150,13 +155,13 @@ public class NewsManagement extends javax.swing.JFrame {
                     .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(themBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xemBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xoaBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(xoaBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(capNhatBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
@@ -180,15 +185,36 @@ public class NewsManagement extends javax.swing.JFrame {
         this.dispose(); // Đóng cửa sổ MainMenuAdmin nếu bạn muốn
     }//GEN-LAST:event_backBtnActionPerformed
 
-    private void xemBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xemBtnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_xemBtnActionPerformed
-
     private void themBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themBtnActionPerformed
-        AddNews addNews = new AddNews(); // Tạo một đối tượng AddNews mới
+        AddOrUpdateNews addNews = new AddOrUpdateNews(); // Tạo một đối tượng AddNews mới
         addNews.setVisible(true); // Hiển thị giao diện AddNews
         this.dispose(); // Đóng giao diện hiện tại
     }//GEN-LAST:event_themBtnActionPerformed
+
+    private void capNhatBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_capNhatBtnActionPerformed
+        int selectedIndex = tinTucTbl.getSelectedRow();
+        if (selectedIndex != -1) {
+            String selectedNewsId = tinTucTbl.getValueAt(selectedIndex, 0).toString();
+            AddOrUpdateNews newsDetails = new AddOrUpdateNews(Integer.parseInt(selectedNewsId));
+
+            newsDetails.setVisible(true);
+            this.dispose(); // Đóng cửa sổ NewsManagement
+        }
+    }//GEN-LAST:event_capNhatBtnActionPerformed
+
+    private void xoaBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xoaBtnActionPerformed
+        int selectedIndex = tinTucTbl.getSelectedRow();
+        if (selectedIndex != -1) {
+            String selectedNewsId = tinTucTbl.getValueAt(selectedIndex, 0).toString();
+
+            int option = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xoá tin tức này?", "Xác nhận xoá", JOptionPane.YES_NO_OPTION);
+            if (option == JOptionPane.YES_OPTION) {
+                deleteNews(Integer.parseInt(selectedNewsId));
+                loadDataToTable();
+                JOptionPane.showMessageDialog(this, "Xoá tin tức thành công!");
+            }
+        }
+    }//GEN-LAST:event_xoaBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -227,6 +253,7 @@ public class NewsManagement extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
+    private javax.swing.JButton capNhatBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -236,7 +263,6 @@ public class NewsManagement extends javax.swing.JFrame {
     private javax.swing.JTextField searchTxt;
     private javax.swing.JButton themBtn;
     private javax.swing.JTable tinTucTbl;
-    private javax.swing.JButton xemBtn;
     private javax.swing.JButton xoaBtn;
     // End of variables declaration//GEN-END:variables
 
@@ -298,4 +324,26 @@ public class NewsManagement extends javax.swing.JFrame {
         return categoryName;
     }
 
+    private void deleteNews(int newsId) {
+        try {
+            // Kết nối đến cơ sở dữ liệu
+            Connection connection = DatabaseUtils.getConnection();
+
+            // Tạo câu truy vấn xóa tin tức với ID tương ứng
+            String query = "DELETE FROM news WHERE id = ?";
+
+            // Tạo một đối tượng PreparedStatement để thực thi câu truy vấn
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, newsId);
+
+            // Thực thi câu truy vấn
+            statement.executeUpdate();
+
+            // Đóng kết nối và tài nguyên
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
