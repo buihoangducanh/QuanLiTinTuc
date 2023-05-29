@@ -119,6 +119,9 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Qu&#x1ea3;n l&#xed; tin t&#x1ee9;c"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="quanLiTinTucBtnActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="quanLiTaiKhoanBtn">
           <Properties>

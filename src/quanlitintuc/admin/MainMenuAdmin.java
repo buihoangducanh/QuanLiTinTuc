@@ -46,6 +46,11 @@ public class MainMenuAdmin extends javax.swing.JFrame {
 
         quanLiTinTucBtn.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         quanLiTinTucBtn.setText("Quản lí tin tức");
+        quanLiTinTucBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                quanLiTinTucBtnActionPerformed(evt);
+            }
+        });
 
         quanLiTaiKhoanBtn.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         quanLiTaiKhoanBtn.setText("Quản lí tài khoản");
@@ -185,6 +190,12 @@ public class MainMenuAdmin extends javax.swing.JFrame {
         modifyProfile.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_suaThongTinCaNhanBtnActionPerformed
+
+    private void quanLiTinTucBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_quanLiTinTucBtnActionPerformed
+         NewsManagement management = new NewsManagement();
+        management.setVisible(true);
+        this.dispose(); // Đóng cửa sổ 
+    }//GEN-LAST:event_quanLiTinTucBtnActionPerformed
 
     /**
      * @param args the command line arguments

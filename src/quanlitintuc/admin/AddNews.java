@@ -1,6 +1,10 @@
 package quanlitintuc.admin;
 
-
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import quanlitintuc.utils.DatabaseUtils;
 
 import java.sql.Connection;
@@ -8,15 +12,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-
-
+import quanlitintuc.dataContext.CurrentUser;
+import quanlitintuc.utils.IMAGE_RESOURCE;
 
 /**
  *
- * @author Acer
+ * @author Anh Bui
  */
 public class AddNews extends javax.swing.JFrame {
+
+    private File selectedImageFile; // Biến để lưu trữ tệp tin ảnh đã chọn
 
     /**
      * Creates new form AddNews
@@ -49,6 +57,7 @@ public class AddNews extends javax.swing.JFrame {
         dangBaiVietBtn = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         danhMucCboBox = new javax.swing.JComboBox<>();
+        backBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Bản tin mới");
@@ -65,7 +74,6 @@ public class AddNews extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel4.setText("Ảnh bài viết");
 
-        anhTinTucLabel.setText("Ảnh bài viêt");
         anhTinTucLabel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         uploadAnhBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -103,6 +111,15 @@ public class AddNews extends javax.swing.JFrame {
             }
         });
 
+        backBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        backBtn.setForeground(new java.awt.Color(255, 0, 0));
+        backBtn.setText("Back");
+        backBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -128,44 +145,52 @@ public class AddNews extends javax.swing.JFrame {
                 .addContainerGap(108, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(302, 302, 302))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(dangBaiVietBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(339, 339, 339))))
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(302, 302, 302))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(dangBaiVietBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(339, 339, 339))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(38, 38, 38)
                 .addComponent(jLabel1)
-                .addGap(26, 26, 26)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tieuDeTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGap(46, 46, 46)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGap(29, 29, 29)
-                            .addComponent(anhTinTucLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(danhMucCboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 180, Short.MAX_VALUE)
-                        .addComponent(uploadAnhBtn)))
-                .addGap(15, 15, 15)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-                .addComponent(dangBaiVietBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tieuDeTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGap(46, 46, 46)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGap(29, 29, 29)
+                                    .addComponent(anhTinTucLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(danhMucCboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(96, 96, 96)
+                                .addComponent(uploadAnhBtn)
+                                .addGap(0, 84, Short.MAX_VALUE)))
+                        .addGap(15, 15, 15)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                        .addComponent(dangBaiVietBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(14, 14, 14))))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -183,16 +208,115 @@ public class AddNews extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void uploadAnhBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_uploadAnhBtnActionPerformed
-        
+
+        JFileChooser fileChooser = new JFileChooser();
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            selectedImageFile = fileChooser.getSelectedFile();
+            String imagePath = selectedImageFile.getAbsolutePath();
+
+            // Tạo một ImageIcon từ đường dẫn ảnh
+            ImageIcon imageIcon = new ImageIcon(imagePath);
+
+            // Lấy kích thước hiện thời của label
+            int labelWidth = anhTinTucLabel.getWidth();
+            int labelHeight = anhTinTucLabel.getHeight();
+
+            // Resize ảnh theo kích thước của label
+            Image image = imageIcon.getImage().getScaledInstance(labelWidth, labelHeight, Image.SCALE_SMOOTH);
+
+            // Tạo một ImageIcon mới từ ảnh đã được resize
+            ImageIcon resizedImageIcon = new ImageIcon(image);
+
+            // Hiển thị ảnh trên label
+            anhTinTucLabel.setIcon(resizedImageIcon);
+
+        }
     }//GEN-LAST:event_uploadAnhBtnActionPerformed
 
     private void dangBaiVietBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dangBaiVietBtnActionPerformed
-        // TODO add your handling code here:
+        String tieuDe = tieuDeTxt.getText();
+        String noiDung = noiDungTxt.getText();
+        String danhMuc = danhMucCboBox.getSelectedItem().toString();
+
+        // Kiểm tra xem đã chọn ảnh hay chưa
+        if (selectedImageFile == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn ảnh");
+            return;
+        }
+
+        try {
+            Connection connection = DatabaseUtils.getConnection();
+
+            // Lấy id của danh mục từ tên danh mục
+            String getCategoryIdQuery = "SELECT id FROM categories WHERE name = ?";
+            PreparedStatement getCategoryIdStmt = connection.prepareStatement(getCategoryIdQuery);
+            getCategoryIdStmt.setString(1, danhMuc);
+            ResultSet resultSet = getCategoryIdStmt.executeQuery();
+            if (!resultSet.next()) {
+                JOptionPane.showMessageDialog(this, "Danh mục không tồn tại");
+                return;
+            }
+            int categoryId = resultSet.getInt("id");
+            int authorId = getAuthorId(CurrentUser.username);
+
+            // Tạo tên cơ sở (basename) cho ảnh
+            String imageBasename = selectedImageFile.getName();
+
+            // Tạo đường dẫn mới cho ảnh trong thư mục lưu trữ
+            String newImagePath = IMAGE_RESOURCE.SOURCE_PATH + imageBasename;
+
+            // Di chuyển file ảnh gốc vào thư mục lưu trữ
+            File newImageFile = new File(newImagePath);
+            Files.copy(selectedImageFile.toPath(), newImageFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+            // Thực hiện câu lệnh insert bài viết mới vào cơ sở dữ liệu
+            String insertNewsQuery = "INSERT INTO news (title, image, content, created_date, author_id, category_id) VALUES (?, ?, ?, current_timestamp(), ?, ?)";
+            PreparedStatement insertNewsStmt = connection.prepareStatement(insertNewsQuery, PreparedStatement.RETURN_GENERATED_KEYS);
+
+            insertNewsStmt.setString(1, tieuDe);
+            insertNewsStmt.setString(2, imageBasename);
+            insertNewsStmt.setString(3, noiDung);
+            insertNewsStmt.setInt(4, authorId);
+            insertNewsStmt.setInt(5, categoryId);
+            insertNewsStmt.executeUpdate();
+
+            // Lấy id của bài viết mới được tạo
+            ResultSet generatedKeys = insertNewsStmt.getGeneratedKeys();
+            int newNewsId;
+            if (generatedKeys.next()) {
+                newNewsId = generatedKeys.getInt(1);
+
+                // Hiển thị thông báo thành công
+                JOptionPane.showMessageDialog(this, "Đăng bài viết thành công!");
+
+                // Reset các trường dữ liệu
+                tieuDeTxt.setText("");
+                noiDungTxt.setText("");
+                anhTinTucLabel.setIcon(null);
+            } else {
+                JOptionPane.showMessageDialog(this, "Đăng bài viết không thành công");
+            }
+
+            // Đóng kết nối và tài nguyên
+            insertNewsStmt.close();
+            getCategoryIdStmt.close();
+            connection.close();
+
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_dangBaiVietBtnActionPerformed
 
     private void danhMucCboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_danhMucCboBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_danhMucCboBoxActionPerformed
+
+    private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
+        NewsManagement management = new NewsManagement();
+        management.setVisible(true);
+        this.dispose(); // Đóng cửa sổ 
+    }//GEN-LAST:event_backBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -223,7 +347,7 @@ public class AddNews extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
-            
+
             @Override
             public void run() {
                 new AddNews().setVisible(true);
@@ -233,6 +357,7 @@ public class AddNews extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel anhTinTucLabel;
+    private javax.swing.JButton backBtn;
     private javax.swing.JButton dangBaiVietBtn;
     private javax.swing.JComboBox<String> danhMucCboBox;
     private javax.swing.JLabel jLabel1;
@@ -251,24 +376,24 @@ public class AddNews extends javax.swing.JFrame {
         try {
             // Kết nối cơ sở dữ liệu
             Connection connection = DatabaseUtils.getConnection();
-            
+
             // Truy vấn danh sách danh mục từ bảng "categories"
             String query = "SELECT name FROM categories";
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
-            
+
             // Tạo một model cho combo box
             DefaultComboBoxModel<String> comboBoxModel = new DefaultComboBoxModel<>();
-            
+
             // Thêm từng danh mục vào model
             while (resultSet.next()) {
                 String categoryName = resultSet.getString("name");
                 comboBoxModel.addElement(categoryName);
             }
-            
+
             // Thiết lập model cho combo box
             danhMucCboBox.setModel(comboBoxModel);
-            
+
             // Đóng kết nối và giải phóng tài nguyên
             resultSet.close();
             statement.close();
@@ -280,6 +405,7 @@ public class AddNews extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
+
     private int getAuthorId(String username) {
         try {
             Connection connection = DatabaseUtils.getConnection();
@@ -295,5 +421,5 @@ public class AddNews extends javax.swing.JFrame {
         }
         return -1; // Trả về -1 nếu không tìm thấy author_id
     }
-    
+
 }
