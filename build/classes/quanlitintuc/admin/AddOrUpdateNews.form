@@ -52,7 +52,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
                               <Component id="tieuDeTxt" alignment="0" max="32767" attributes="0"/>
-                              <Component id="anhTinTucLabel" alignment="0" pref="450" max="32767" attributes="0"/>
+                              <Component id="anhTinTucLabel" alignment="0" min="-2" pref="450" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">

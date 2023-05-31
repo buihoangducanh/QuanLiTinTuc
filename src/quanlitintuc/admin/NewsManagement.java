@@ -195,6 +195,8 @@ public class NewsManagement extends javax.swing.JFrame {
 
             newsDetails.setVisible(true);
             this.dispose(); // Đóng cửa sổ NewsManagement
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một dòng tin cần cập nhật.", "Thông báo", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_capNhatBtnActionPerformed
 
