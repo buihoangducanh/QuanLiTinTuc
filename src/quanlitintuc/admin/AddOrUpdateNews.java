@@ -71,11 +71,8 @@ public class AddOrUpdateNews extends javax.swing.JFrame {
                 selectedImageFile = imageFile;
 
                 ImageIcon imageIcon = new ImageIcon(imagePath);
-                int labelWidth = anhTinTucLabel.getWidth();
-                int labelHeight = anhTinTucLabel.getHeight();
-                Image scaledImage = imageIcon.getImage().getScaledInstance(labelWidth, labelHeight, Image.SCALE_SMOOTH);
-                ImageIcon resizedImageIcon = new ImageIcon(scaledImage);
-                anhTinTucLabel.setIcon(resizedImageIcon);
+                
+                anhTinTucLabel.setIcon(imageIcon);
             }
         }
 
@@ -126,8 +123,6 @@ public class AddOrUpdateNews extends javax.swing.JFrame {
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel4.setText("Ảnh bài viết");
-
-        anhTinTucLabel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         uploadAnhBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         uploadAnhBtn.setText("Tải ảnh lên");

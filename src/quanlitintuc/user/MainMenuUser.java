@@ -22,7 +22,7 @@ public class MainMenuUser extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        xemTinBtn = new javax.swing.JButton();
         dangXuatBtn = new javax.swing.JButton();
         suaThongTinCaNhanBtn = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
@@ -35,8 +35,13 @@ public class MainMenuUser extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(204, 0, 0));
         jLabel1.setText("Xin chào người dùng");
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jButton1.setText("Xem tin tức");
+        xemTinBtn.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        xemTinBtn.setText("Xem tin tức");
+        xemTinBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xemTinBtnActionPerformed(evt);
+            }
+        });
 
         dangXuatBtn.setBackground(new java.awt.Color(204, 204, 204));
         dangXuatBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -79,7 +84,7 @@ public class MainMenuUser extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(xemTinBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(suaThongTinCaNhanBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(269, 269, 269))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -102,7 +107,7 @@ public class MainMenuUser extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
                         .addComponent(jLabel2)
                         .addGap(45, 45, 45)))
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(xemTinBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(40, 40, 40)
                 .addComponent(suaThongTinCaNhanBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(127, Short.MAX_VALUE))
@@ -146,6 +151,12 @@ public class MainMenuUser extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_suaThongTinCaNhanBtnActionPerformed
 
+    private void xemTinBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xemTinBtnActionPerformed
+        NewsList list = new NewsList();
+        list.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_xemTinBtnActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -184,11 +195,11 @@ public class MainMenuUser extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton dangXuatBtn;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JButton suaThongTinCaNhanBtn;
     private javax.swing.JLabel username;
+    private javax.swing.JButton xemTinBtn;
     // End of variables declaration//GEN-END:variables
 }

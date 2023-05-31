@@ -3,7 +3,7 @@ package quanlitintuc;
 import java.awt.EventQueue;
 
 
-public class StartApp {
+public class START_APP {
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
