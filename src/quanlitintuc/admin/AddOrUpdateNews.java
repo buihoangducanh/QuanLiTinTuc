@@ -137,7 +137,9 @@ public class AddOrUpdateNews extends javax.swing.JFrame {
 
         noiDungTxt.setColumns(20);
         noiDungTxt.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        noiDungTxt.setLineWrap(true);
         noiDungTxt.setRows(5);
+        noiDungTxt.setWrapStyleWord(true);
         jScrollPane1.setViewportView(noiDungTxt);
 
         taoCapNhatBtn.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N

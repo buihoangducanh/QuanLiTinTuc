@@ -1,6 +1,7 @@
 package quanlitintuc.user;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -30,8 +31,6 @@ public class NewsList extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        locCboBox = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         searchTxt = new javax.swing.JTextField();
         timBtn = new javax.swing.JButton();
@@ -47,17 +46,16 @@ public class NewsList extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(204, 51, 0));
         jLabel2.setText("Danh sách tin tức");
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel3.setText("Lọc tin tức theo");
-
-        locCboBox.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        locCboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Mới nhất", "Cũ nhất", "Nhiều bình luận nhất" }));
-
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel4.setText("Nhập từ khoá để tìm kiếm");
 
         timBtn.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         timBtn.setText("Tìm");
+        timBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                timBtnActionPerformed(evt);
+            }
+        });
 
         tinTucTbl.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         tinTucTbl.setModel(new javax.swing.table.DefaultTableModel(
@@ -119,15 +117,13 @@ public class NewsList extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(locCboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 126, Short.MAX_VALUE)
+                                .addGap(53, 53, 53)
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(timBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(42, 42, 42)
+                                .addComponent(timBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 370, Short.MAX_VALUE)))
                         .addGap(30, 30, 30))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -139,10 +135,8 @@ public class NewsList extends javax.swing.JFrame {
                     .addComponent(backBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(locCboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(searchTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(timBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(30, 30, 30)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 393, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -194,6 +188,56 @@ public class NewsList extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_backBtnActionPerformed
 
+    private void timBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_timBtnActionPerformed
+        String keyword = searchTxt.getText().trim();
+        searchNews(keyword);
+    }//GEN-LAST:event_timBtnActionPerformed
+                                  
+
+    private void searchNews(String keyword) {
+        try {
+            // Kết nối đến cơ sở dữ liệu
+            Connection connection = DatabaseUtils.getConnection();
+
+            // Tạo câu truy vấn tìm kiếm
+            String query = "SELECT * FROM news WHERE title LIKE ? OR content LIKE ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, "%" + keyword + "%");
+            statement.setString(2, "%" + keyword + "%");
+
+            // Thực thi câu truy vấn và lấy kết quả trả về
+            ResultSet resultSet = statement.executeQuery();
+
+            // Xóa tất cả các dòng cũ trong bảng tinTucTbl
+            DefaultTableModel model = (DefaultTableModel) tinTucTbl.getModel();
+            model.setRowCount(0);
+
+            // Duyệt qua từng dòng kết quả ResultSet và thêm vào bảng tinTucTbl
+            boolean found = false; // Biến kiểm tra có tìm thấy bản ghi hay không
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                String content = resultSet.getString("content");
+                String category = getCategoryName(resultSet.getInt("category_id"));
+
+                // Thêm dòng mới vào bảng
+                model.addRow(new Object[]{id, title, content, category});
+                found = true; // Đánh dấu đã tìm thấy bản ghi
+            }
+
+            if (!found) {
+                // Hiển thị thông báo nếu không tìm thấy bản ghi nào
+                JOptionPane.showMessageDialog(null, "Không tìm thấy tin tức nào trùng với từ khoá.");
+            }
+
+            // Đóng kết nối và tài nguyên
+            resultSet.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * @param args the command line arguments
      */
@@ -232,11 +276,9 @@ public class NewsList extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backBtn;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JComboBox<String> locCboBox;
     private javax.swing.JTextField searchTxt;
     private javax.swing.JButton timBtn;
     private javax.swing.JTable tinTucTbl;
