@@ -5,7 +5,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.mindrot.jbcrypt.BCrypt;
 import quanlitintuc.utils.DatabaseUtils;
+
 /**
  *
  * @author AnhBui
@@ -220,26 +222,29 @@ public class SignUpForm extends javax.swing.JFrame {
     }//GEN-LAST:event_dangNhapBtnActionPerformed
 
     private boolean dangKyTaiKhoan(String taiKhoan, String matKhau, String email, String hoTen) {
+       
         try {
-            Connection conn = (Connection) DatabaseUtils.getConnection();
-            String query = "INSERT INTO users (username , password, email, full_name) VALUES (?, ?, ?, ?)";
-            PreparedStatement statement = conn.prepareStatement(query);
-            statement.setString(1, taiKhoan);
-            statement.setString(2, matKhau);
-            statement.setString(3, email);
-            statement.setString(4, hoTen);
+        String hashedPassword = BCrypt.hashpw(matKhau, BCrypt.gensalt());
+        
+        Connection conn = (Connection) DatabaseUtils.getConnection();
+        String query = "INSERT INTO users (username, password, email, full_name) VALUES (?, ?, ?, ?)";
+        PreparedStatement statement = conn.prepareStatement(query);
+        statement.setString(1, taiKhoan);
+        statement.setString(2, hashedPassword);
+        statement.setString(3, email);
+        statement.setString(4, hoTen);
 
-            int rowsAffected = statement.executeUpdate();
+        int rowsAffected = statement.executeUpdate();
 
-            statement.close();
-            conn.close();
+        statement.close();
+        conn.close();
 
-            return rowsAffected > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        return rowsAffected > 0;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
 
-        return false;
+    return false;
     }
 
     

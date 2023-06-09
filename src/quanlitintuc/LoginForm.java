@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.mindrot.jbcrypt.BCrypt;
 import quanlitintuc.admin.MainMenuAdmin;
 import quanlitintuc.dataContext.CurrentUser;
 import quanlitintuc.user.MainMenuUser;
@@ -168,7 +169,8 @@ public class LoginForm extends javax.swing.JFrame {
             
             if (kiemTraQuyenAdmin(taiKhoan)) {
                 // Người dùng có quyền admin, chuyển đến giao diện MainMenuAdmin
-                javax.swing.JOptionPane.showMessageDialog(this, "Đăng nhập thành công với quyền Admin!");
+                javax.swing.JOptionPane.
+                showMessageDialog(this, "Đăng nhập thành công với quyền Admin!");
                 MainMenuAdmin mainMenuAdmin = new MainMenuAdmin();
                 CurrentUser.isAdmin = true;
                 mainMenuAdmin.setVisible(true);
@@ -244,27 +246,30 @@ public class LoginForm extends javax.swing.JFrame {
         // Thực hiện kiểm tra tài khoản và mật khẩu trong cơ sở dữ liệu
         // Sử dụng phương thức getConnection từ lớp DatabaseUtils
         try {
-            Connection connection = DatabaseUtils.getConnection();
-            // Thực hiện truy vấn để kiểm tra tài khoản và mật khẩu
-            // Ví dụ:
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE username = ? AND password = ?");
-            statement.setString(1, taiKhoan);
-            statement.setString(2, matKhau);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
+        Connection connection = DatabaseUtils.getConnection();
+        PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
+        statement.setString(1, taiKhoan);
+        ResultSet resultSet = statement.executeQuery();
+        if (resultSet.next()) { 
+            // Lấy mật khẩu đã mã hoá từ cơ sở dữ liệu
+            String hashedPassword = resultSet.getString("password");
+            
+            // So sánh mật khẩu nhập vào với mật khẩu đã mã hoá bằng bcrypt
+            if (BCrypt.checkpw(matKhau, hashedPassword)) {
                 // Tài khoản và mật khẩu hợp lệ
                 return true;
             }
-
-            // Đóng kết nối và các đối tượng Statement, ResultSet (nếu có)
-            resultSet.close();
-            statement.close();
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
-        return false;
+        // Đóng kết nối và các đối tượng Statement, ResultSet (nếu có)
+        resultSet.close();
+        statement.close();
+        connection.close();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return false;
     }
     
     private String layThongTinFullName(String taiKhoan) {

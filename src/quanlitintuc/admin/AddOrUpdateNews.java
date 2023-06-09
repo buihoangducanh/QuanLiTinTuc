@@ -33,7 +33,7 @@ public class AddOrUpdateNews extends javax.swing.JFrame {
         initComponents();
         // Gọi phương thức để load danh mục vào combo box khi khởi tạo giao diện
         loadDanhMucComboBox();
-         setLocationRelativeTo(null);
+        setLocationRelativeTo(null);
     }
 
     public AddOrUpdateNews(int newsId) {
@@ -41,7 +41,7 @@ public class AddOrUpdateNews extends javax.swing.JFrame {
         this.newsId = newsId;
         loadDanhMucComboBox();
         displayNewsInfo();
-         setLocationRelativeTo(null);
+        setLocationRelativeTo(null);
     }
 
     private void displayNewsInfo() {
@@ -284,7 +284,6 @@ public class AddOrUpdateNews extends javax.swing.JFrame {
     }//GEN-LAST:event_uploadAnhBtnActionPerformed
 
     private void taoCapNhatBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_taoCapNhatBtnActionPerformed
-
         saveNews();
     }//GEN-LAST:event_taoCapNhatBtnActionPerformed
 

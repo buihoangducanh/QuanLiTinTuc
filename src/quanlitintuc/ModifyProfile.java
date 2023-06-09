@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import org.mindrot.jbcrypt.BCrypt;
 import quanlitintuc.admin.MainMenuAdmin;
 import quanlitintuc.dataContext.CurrentUser;
 import quanlitintuc.user.MainMenuUser;
@@ -140,53 +141,56 @@ public class ModifyProfile extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void xacNhanSuaThongTinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xacNhanSuaThongTinActionPerformed
-        String hoTen = hoTenTxt.getText();
-        String email = emailTxt.getText();
-        String matKhau = new String(matKhauTxt.getPassword());
-        String xacNhanMatKhau = new String(xacNhanMatKhauTxt.getPassword());
+         String hoTen = hoTenTxt.getText();
+    String email = emailTxt.getText();
+    String matKhau = new String(matKhauTxt.getPassword());
+    String xacNhanMatKhau = new String(xacNhanMatKhauTxt.getPassword());
 
-        // Kiểm tra xem mật khẩu và xác nhận mật khẩu có trùng nhau không
-        if (matKhau.equals(xacNhanMatKhau)) {
-            try (Connection connection = DatabaseUtils.getConnection()) {
-                // Cập nhật thông tin người dùng trong cơ sở dữ liệu
-                String query;
-                if (!matKhau.isEmpty()) {
-                    query = "UPDATE users SET full_name = ?, email = ?, password = ? WHERE username = ?";
-                } else {
-                    query = "UPDATE users SET full_name = ?, email = ? WHERE username = ?";
-                }
-                PreparedStatement statement = connection.prepareStatement(query);
-                statement.setString(1, hoTen);
-                statement.setString(2, email);
-                if (!matKhau.isEmpty()) {
-                    statement.setString(3, matKhau);
-                    statement.setString(4, CurrentUser.username);
-                } else {
-                    statement.setString(3, CurrentUser.username);
-                }
-                statement.executeUpdate();
-
-                JOptionPane.showMessageDialog(this, "Sửa thông tin thành công!");
-                // Kiểm tra quyền của người dùng
-                if (CurrentUser.isAdmin) {
-                    // Người dùng là admin, mở ra MainMenuAdmin
-                    MainMenuAdmin adminMenu = new MainMenuAdmin();
-                    adminMenu.setVisible(true);
-                } else {
-                    // Người dùng không phải là admin, mở ra MainMenuUser
-                    MainMenuUser userMenu = new MainMenuUser();
-                    userMenu.setVisible(true);
-                }
-                this.dispose();
-
-            } catch (SQLException e) {
-                // Xử lý exception nếu có lỗi xảy ra
-                e.printStackTrace();
+    // Kiểm tra xem mật khẩu và xác nhận mật khẩu có trùng nhau không
+    if (matKhau.equals(xacNhanMatKhau)) {
+        try (Connection connection = DatabaseUtils.getConnection()) {
+            // Cập nhật thông tin người dùng trong cơ sở dữ liệu
+            String query;
+            String hashedMatKhau=null;
+            if (!matKhau.isEmpty()) {
+                // Mã hóa mật khẩu mới sử dụng bcrypt
+                hashedMatKhau = BCrypt.hashpw(matKhau, BCrypt.gensalt());
+                query = "UPDATE users SET full_name = ?, email = ?, password = ? WHERE username = ?";
+            } else {
+                query = "UPDATE users SET full_name = ?, email = ? WHERE username = ?";
             }
-        } else {
-            // Hiển thị thông báo lỗi nếu mật khẩu và xác nhận mật khẩu không trùng nhau
-            JOptionPane.showMessageDialog(this, "Mật khẩu và xác nhận mật khẩu không trùng nhau!");
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, hoTen);
+            statement.setString(2, email);
+            if (!matKhau.isEmpty()) {
+                statement.setString(3, hashedMatKhau);
+                statement.setString(4, CurrentUser.username);
+            } else {
+                statement.setString(3, CurrentUser.username);
+            }
+            statement.executeUpdate();
+
+            JOptionPane.showMessageDialog(this, "Sửa thông tin thành công!");
+            // Kiểm tra quyền của người dùng
+            if (CurrentUser.isAdmin) {
+                // Người dùng là admin, mở ra MainMenuAdmin
+                MainMenuAdmin adminMenu = new MainMenuAdmin();
+                adminMenu.setVisible(true);
+            } else {
+                // Người dùng không phải là admin, mở ra MainMenuUser
+                MainMenuUser userMenu = new MainMenuUser();
+                userMenu.setVisible(true);
+            }
+            this.dispose();
+
+        } catch (SQLException e) {
+            // Xử lý exception nếu có lỗi xảy ra
+            e.printStackTrace();
         }
+    } else {
+        // Hiển thị thông báo lỗi nếu mật khẩu và xác nhận mật khẩu không trùng nhau
+        JOptionPane.showMessageDialog(this, "Mật khẩu và xác nhận mật khẩu không trùng nhau!");
+    }
     }//GEN-LAST:event_xacNhanSuaThongTinActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
